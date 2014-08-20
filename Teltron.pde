@@ -3,6 +3,7 @@
 //magnetic field intensity (intermediate mode)
 //electric field intensity (intermediate mode)
 //coil current and turns, linac voltage, plate voltage (advanced mode)
+//electron beam tightness (super-advanced mode)
 
 //assumes uniform fields, mutually perpendicular to long axis of window
 
@@ -29,30 +30,52 @@ float electronCharge;  //set to unity
 float electronMass;    //set to unity
 int i = 0;
 ArrayList chargeList;
+float brightness;
 
 Particle myElectron;
 
-void setup(){
+void setup() {
   size (960, 540);
   background(200);
   electronCharge = -1;
   electronMass = 1;
-  EFieldStrength = -7.4914e-01; //positive is up
-  BFieldStrength = 0.1; //positive is into screen
-  
-  myElectron = new Particle(electronCharge, electronMass, width, height/2, -16,0);
+  EFieldStrength = -0.05; //positive is up
+  BFieldStrength = 0.02; //positive is into screen
+
+  myElectron = new Particle(electronCharge, electronMass, width, height/2, -16, 0);
   chargeList = new ArrayList();
-  
+
+  brightness = 1; //probability of electron emission
 }
 
-void draw(){
+void draw() {
   noStroke();
-  fill(200,25);
-  //rect(0,0,width,height);
-  //BFieldStrength = 0.001*abs(sin(i/60.0));
+  fill(200, 25);
+  rect(0, 0, width, height);
+
+  //BFieldStrength = 0.02*abs(cos(i/60.0));
   //i++;
-  myElectron.update(EFieldStrength, BFieldStrength);
-  myElectron.display();
+
+  float electronDice = random(0, 1);
+  if (electronDice < brightness) {
+    makeElectron();
+  }
+
+  //myElectron.update(EFieldStrength, BFieldStrength);
+  //myElectron.display();
+
+  for (int i = 0; i < chargeList.size (); i++) {
+    Particle thisElectron = (Particle) chargeList.get(i);
+    thisElectron.update(EFieldStrength, BFieldStrength);
+    thisElectron.display();
+    if (thisElectron.posX < 0) {
+      chargeList.remove(i);
+    }
+  }
 }
 
+void makeElectron() {
+  Particle newElectron = new Particle(electronCharge, electronMass, width, height/2 + random(-10, 10), -5+random(-0.01, 0.01), 0);
+  chargeList.add(newElectron);
+}
 
