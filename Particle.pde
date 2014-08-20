@@ -31,12 +31,23 @@ void update(float eField, float bField){
   posX = posX + velX;  //Update position
   posY = posY + velY;  
   
-  float accY = ((eField*charge) - (bField*charge*velX))/mass; //Physics!
-  float accX = (bField*charge*velY)/mass;                     //Physics!
+  //first deal with acceleration due to magnetic field
+  //shouldn't change speed, just direction
   
-  velX = velX + accX;  //Update velocity
+  float velOldSq = sq(velX)+sq(velY); //Calculate  squared magnitude of velocity before applying B-Field
+  float accY = -1*(bField*charge*velX)/mass; //Calculate x and y acceleration due to B-Field
+  float accX = (bField*charge*velY)/mass;                   
+  
+  velX = velX + accX;  //Update velocity 
   velY = velY + accY;
   
+  float velNewSq = sq(velX)+sq(velY); //Calculate  squared magnitude of velocity after applying B-Field.
+  velX = sqrt(velOldSq/velNewSq)*velX; //use old and new magnitudes to normalise new velX and velY
+  velY = sqrt(velOldSq/velNewSq)*velY; //this ensures no new kinetic energy creeps in!
+  
+  
+  accY = (eField*charge)/mass; //calculate acceleration due to E-Field
+  velY = velY + accY;
 }
 
 void display(){
