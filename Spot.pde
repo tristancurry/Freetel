@@ -28,16 +28,16 @@ void update(){
   timer ++;
 }
 
-void display(){
+void display(PGraphics pg){
   
- stroke(0);
- strokeWeight(1);
- fill(255,0,0);
- ellipseMode(CENTER);
- pushMatrix();
- translate(posX,posY);
- ellipse(0,0,20,20);
- popMatrix();
+ pg.stroke(0);
+ pg.strokeWeight(1);
+ pg.fill(255,0,0);
+ pg.ellipseMode(CENTER);
+ pg.pushMatrix();
+ pg.translate(posX,posY);
+ pg.ellipse(0,0,20,20);
+ pg.popMatrix();
  
  
   

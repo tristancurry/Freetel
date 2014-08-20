@@ -58,16 +58,16 @@ void update(float eField, float bField){
   timer ++;
 }
 
-void display(){
+void display(PGraphics pg){
   
- stroke(0);
- strokeWeight(1);
- fill(0,100,255);
- ellipseMode(CENTER);
- pushMatrix();
- translate(posX,posY);
- ellipse(0,0,5,5);
- popMatrix();
+ pg.stroke(0);
+ pg.strokeWeight(1);
+ pg.fill(0,100,255);
+ pg.ellipseMode(CENTER);
+ pg.pushMatrix();
+ pg.translate(posX,posY);
+ pg.ellipse(0,0,5,5);
+ pg.popMatrix();
  
  
   
