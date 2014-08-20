@@ -40,44 +40,56 @@ PGraphics teltronScreen;
 Particle myElectron;
 
 void setup() {
-  size (960, 540);
+  size (960, 540, OPENGL);
   background(200);
   electronBeam = createGraphics(width, height);
   teltronScreen = createGraphics(width, height);
   electronCharge = -1;
   electronMass = 1;
-  EFieldStrength = -0.04; //positive is up
-  BFieldStrength = 0.04; //positive is into screen
+  EFieldStrength = -0.08; //positive is up
+  BFieldStrength = 0.03; //positive is into screen
   screenTilt = 40;
 
   chargeList = new ArrayList();
   spotList = new ArrayList();
 
-  brightness = 0.5; //probability of electron emission
+  brightness = 1; //probability of electron emission
 }
 
 void draw() {
-background(0);
+  background(0);
   teltronScreen.beginDraw();
-  teltronScreen.clear();
-  //teltronScreen.fill(200);
-  //teltronScreen.noStroke();
-  //teltronScreen.rect(0,0,width,height);
-    for (int i = 0; i < spotList.size (); i++) {
+  teltronScreen.blendMode(SCREEN);
+  teltronScreen.background(0);
+  for (int i = 0; i < spotList.size (); i++) {
+    Spot thisSpot = (Spot) spotList.get(i);
+    if (thisSpot.timer > 500) {
+      spotList.remove(i);
+    }
+  }
+
+  for (int i = 0; i < spotList.size (); i++) {
     Spot thisSpot = (Spot) spotList.get(i);
     thisSpot.update();
     thisSpot.display(teltronScreen);
-    println(thisSpot.timer);
-    thisSpot.display(teltronScreen);
-    if (thisSpot.timer > 300) {
-      spotList.remove(i);
-    }
   }
   teltronScreen.endDraw();
 
   electronBeam.beginDraw();
+  //electronBeam.blendMode(MULTIPLY);
   electronBeam.clear();
-    for (int i = 0; i < chargeList.size (); i++) {
+
+  for (int i = 0; i < chargeList.size (); i++) {
+    Particle thisElectron = (Particle) chargeList.get(i);
+    if (thisElectron.posX < 0) {
+      chargeList.remove(i);
+    } else if (thisElectron.posZ < (-1*screenTilt/width)*thisElectron.posX + 0.5*screenTilt) {
+      screenCollide(thisElectron);
+      chargeList.remove(i);
+    }
+  }
+
+  for (int i = 0; i < chargeList.size (); i++) {
     Particle thisElectron = (Particle) chargeList.get(i);
     thisElectron.update(EFieldStrength, BFieldStrength);
     thisElectron.display(electronBeam);
@@ -88,16 +100,14 @@ background(0);
       chargeList.remove(i);
     }
   }
-  //electronBeam.noStroke();
-  //electronBeam.fill(20,20,20,25);
-  //electronBeam.rect(0,0,width,height);
+
 
 
   electronBeam.endDraw();
 
 
-  //BFieldStrength = 0.08*abs(cos(i*60/3.5e10));
-  //i++;
+  BFieldStrength = 0.03*abs(cos(i/60));
+  i++;
 
   float electronDice = random(0, 1);
   if (electronDice < brightness) {
@@ -112,15 +122,12 @@ background(0);
 
 
 
-  image(teltronScreen,0,0);
-  image(electronBeam,0,0);
-
-
-
+  image(teltronScreen, 0, 0);
+  image(electronBeam, 0, 0);
 }
 
 void makeElectron() {
-  Particle newElectron = new Particle(electronCharge, electronMass, width, height/2 + random(-10, 10), random(-20, 20), -5+random(-0.01, 0.01), 0, 0);
+  Particle newElectron = new Particle(electronCharge, electronMass, width, height/2 + random(-10, 10), random(-20, 20), -5+random(-0.01, 0.01), random(-0.1, 0.1), random(-0.01, 0.01));
   chargeList.add(newElectron);
 }
 
@@ -128,3 +135,4 @@ void screenCollide(Particle thisParticle) {
   Spot newSpot = new Spot(thisParticle.posX, thisParticle.posY, thisParticle.posZ);
   spotList.add(newSpot);
 }
+

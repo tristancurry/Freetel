@@ -30,13 +30,12 @@ void update(){
 
 void display(PGraphics pg){
   
- pg.stroke(0);
- pg.strokeWeight(1);
- pg.fill(255,0,0);
+ pg.noStroke();
+ pg.fill(10,105,255);
  pg.ellipseMode(CENTER);
  pg.pushMatrix();
  pg.translate(posX,posY);
- pg.ellipse(0,0,20,20);
+ pg.ellipse(0,0,7,7);
  pg.popMatrix();
  
  
