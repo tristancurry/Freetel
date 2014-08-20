@@ -30,7 +30,9 @@ float electronCharge;  //set to unity
 float electronMass;    //set to unity
 int i = 0;
 ArrayList chargeList;
+ArrayList spotList;
 float brightness;
+float screenTilt; //foreshortened z-width of screen
 
 Particle myElectron;
 
@@ -39,13 +41,14 @@ void setup() {
   background(200);
   electronCharge = -1;
   electronMass = 1;
-  EFieldStrength = -0.05; //positive is up
-  BFieldStrength = 0.02; //positive is into screen
-
-  myElectron = new Particle(electronCharge, electronMass, width, height/2, -16, 0);
+  EFieldStrength = -0.02; //positive is up
+  BFieldStrength = 0.01; //positive is into screen
+  screenTilt = 40;
+ 
   chargeList = new ArrayList();
+  spotList = new ArrayList();
 
-  brightness = 1; //probability of electron emission
+  brightness = 0.5; //probability of electron emission
 }
 
 void draw() {
@@ -53,7 +56,7 @@ void draw() {
   fill(200, 25);
   rect(0, 0, width, height);
 
-  //BFieldStrength = 0.02*abs(cos(i/60.0));
+  //BFieldStrength = 0.08*abs(cos(i*60/3.5e10));
   //i++;
 
   float electronDice = random(0, 1);
@@ -61,8 +64,7 @@ void draw() {
     makeElectron();
   }
 
-  //myElectron.update(EFieldStrength, BFieldStrength);
-  //myElectron.display();
+
 
   for (int i = 0; i < chargeList.size (); i++) {
     Particle thisElectron = (Particle) chargeList.get(i);
@@ -70,12 +72,30 @@ void draw() {
     thisElectron.display();
     if (thisElectron.posX < 0) {
       chargeList.remove(i);
+    } else if(thisElectron.posZ < (-1*screenTilt/width)*thisElectron.posX + 0.5*screenTilt){
+      screenCollide(thisElectron);
+      chargeList.remove(i);
+    }
+  }
+  
+    for (int i = 0; i < spotList.size (); i++) {
+    Spot thisSpot = (Spot) spotList.get(i);
+    thisSpot.update();
+    thisSpot.display();
+    println(thisSpot.timer);
+    thisSpot.display();
+    if (thisSpot.timer > 300) {
+      spotList.remove(i);
     }
   }
 }
 
 void makeElectron() {
-  Particle newElectron = new Particle(electronCharge, electronMass, width, height/2 + random(-10, 10), -5+random(-0.01, 0.01), 0);
+  Particle newElectron = new Particle(electronCharge, electronMass, width, height/2 + random(-10, 10),random(-20,20), -5+random(-0.01, 0.01), 0, 0);
   chargeList.add(newElectron);
 }
 
+void screenCollide(Particle thisParticle) {
+  Spot newSpot = new Spot(thisParticle.posX, thisParticle.posY,thisParticle.posZ);
+  spotList.add(newSpot);
+}

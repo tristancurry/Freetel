@@ -5,19 +5,25 @@ float mass;
 
 float posX;
 float posY;
+float posZ;
 
 float velX;
 float velY;
+float velZ;
+int timer;
 
 //Constructor
 
-Particle(float _charge, float _mass, float _posX, float _posY, float _velX, float _velY){
+Particle(float _charge, float _mass, float _posX, float _posY, float _posZ, float _velX, float _velY, float _velZ){
   charge = _charge;
   mass = _mass;
   posX = _posX;
   posY = _posY;
+  posZ = _posZ;
   velX = _velX;
   velY = _velY;
+  velZ = _velZ;
+  timer = 0;
 }
 
 //Alternative constructors (for the lazy)
@@ -48,6 +54,8 @@ void update(float eField, float bField){
   
   accY = (eField*charge)/mass; //calculate acceleration due to E-Field
   velY = velY + accY;
+  
+  timer ++;
 }
 
 void display(){
