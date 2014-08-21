@@ -47,7 +47,7 @@ void setup() {
   electronCharge = -1;
   electronMass = 1;
   EFieldStrength = -0.08; //positive is up
-  BFieldStrength = 0.03; //positive is into screen
+  BFieldStrength = 0.05; //positive is into screen
   screenTilt = 40;
 
   chargeList = new ArrayList();
@@ -106,8 +106,8 @@ void draw() {
   electronBeam.endDraw();
 
 
-  BFieldStrength = 0.03*abs(cos(i/60));
-  i++;
+ // BFieldStrength = 0.03*abs(cos(i/60));
+  //i++;
 
   float electronDice = random(0, 1);
   if (electronDice < brightness) {
