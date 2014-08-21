@@ -22,12 +22,15 @@
 //start with a plate voltage of 10kV => E-Field is -5.625e02 N/C = -7.4914e-04 EFu
 //for force equalisation, we need a B-Field of 4.6821e-05 BFu
 
+import controlP5.*;
 
+ControlP5 myController;
 
 float EFieldStrength;
 float BFieldStrength;
 float electronCharge;  //set to unity
 float electronMass;    //set to unity
+float electronSpeed;
 int i = 0;
 ArrayList chargeList;
 ArrayList spotList;
@@ -38,7 +41,6 @@ PGraphics electronBeam;
 PGraphics teltronScreen;
 
 
-LinearSlider mySlider;
 
 void setup() {
   size (960, 540, OPENGL);
@@ -47,15 +49,24 @@ void setup() {
   teltronScreen = createGraphics(width, height);
   electronCharge = -1;
   electronMass = 1;
+  electronSpeed = 5;
   EFieldStrength = -0.08; //positive is up
   BFieldStrength = 0.05; //positive is into screen
   screenTilt = 40;
 
   chargeList = new ArrayList();
   spotList = new ArrayList();
-  mySlider = new LinearSlider(400,20,120, 70);
 
   brightness = 1; //probability of electron emission
+
+  myController = new ControlP5(this);
+
+  myController.addSlider("BFieldStrength", -0.5, 0.5, BFieldStrength, 10, 10, 100, 160); 
+  myController.controller("BFieldStrength").setColorForeground(#CC0000);
+  myController.addSlider("EFieldStrength", -5.0, 5.0, EFieldStrength, 10, 190, 100, 160); 
+  myController.controller("EFieldStrength").setColorForeground(#CCCC00);
+  myController.addSlider("electronSpeed", 1.0, 11.0, electronSpeed, 10, 370, 100, 160); 
+  myController.controller("electronSpeed").setColorForeground(#0000CC);
 }
 
 void draw() {
@@ -75,20 +86,18 @@ void draw() {
     thisSpot.update();
     thisSpot.display(teltronScreen);
   }
-  
+
   teltronScreen.pushMatrix();
-  teltronScreen.translate(width/2,0.8*height);
-  mySlider.display(teltronScreen);
+  teltronScreen.translate(width/2, 0.8*height);
   teltronScreen.popMatrix();
   teltronScreen.endDraw();
 
   electronBeam.beginDraw();
-  //electronBeam.blendMode(MULTIPLY);
   electronBeam.clear();
 
   for (int i = 0; i < chargeList.size (); i++) {
     Particle thisElectron = (Particle) chargeList.get(i);
-    if (thisElectron.posX < 0) {
+    if (thisElectron.posX < 0 || thisElectron.posX > 1.5*width ||thisElectron.posY > 1.5*height || thisElectron.posY < -0.5*height || thisElectron.timer > 1800) {
       chargeList.remove(i);
     } else if (thisElectron.posZ < (-1*screenTilt/width)*thisElectron.posX + 0.5*screenTilt) {
       screenCollide(thisElectron);
@@ -100,12 +109,6 @@ void draw() {
     Particle thisElectron = (Particle) chargeList.get(i);
     thisElectron.update(EFieldStrength, BFieldStrength);
     thisElectron.display(electronBeam);
-    if (thisElectron.posX < 0) {
-      chargeList.remove(i);
-    } else if (thisElectron.posZ < (-1*screenTilt/width)*thisElectron.posX + 0.5*screenTilt) {
-      screenCollide(thisElectron);
-      chargeList.remove(i);
-    }
   }
 
 
@@ -113,7 +116,7 @@ void draw() {
   electronBeam.endDraw();
 
 
- // BFieldStrength = 0.03*abs(cos(i/60));
+  // BFieldStrength = 0.03*abs(cos(i/60));
   //i++;
 
   float electronDice = random(0, 1);
@@ -128,14 +131,16 @@ void draw() {
 
 
 
-
+  pushMatrix();
+  translate(150,0);
+  scale(0.84375);
   image(teltronScreen, 0, 0);
   image(electronBeam, 0, 0);
-
+  popMatrix();
 }
 
 void makeElectron() {
-  Particle newElectron = new Particle(electronCharge, electronMass, width, height/2 + random(-10, 10), random(-20, 20), -5+random(-0.01, 0.01), random(-0.1, 0.1), random(-0.01, 0.01));
+  Particle newElectron = new Particle(electronCharge, electronMass, width, height/2 + random(-10, 10), random(-20, 20), (-1*electronSpeed)+random(-0.02, 0.02), random(-0.1, 0.1), random(-0.01, 0.01));
   chargeList.add(newElectron);
 }
 

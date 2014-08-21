@@ -94,16 +94,16 @@ class Particle {
     color alphaInc = color(0, 0, 0, 255/(1.0*trailLength));
 
     pg.noStroke();
-    pg.ellipseMode(CENTER);
+    pg.rectMode(CENTER);
     for (int i = 0; i < posXArray.length; i++) {
       pg.fill(electronCol - i*alphaInc);
       pg.pushMatrix();
       pg.translate(posXArray[i], posYArray[i]);
-      pg.ellipse(0, 0, 5, 5);
+      pg.rect(0, 0, 5, 5);
       pg.popMatrix();
     }
     pg.fill(255,100,255);
-    pg.ellipse(posX,posY,3,3);
+    pg.rect(posX,posY,3,3);
   }
 }
 
