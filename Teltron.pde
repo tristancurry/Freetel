@@ -37,7 +37,8 @@ float screenTilt; //foreshortened z-width of screen
 PGraphics electronBeam;
 PGraphics teltronScreen;
 
-Particle myElectron;
+
+LinearSlider mySlider;
 
 void setup() {
   size (960, 540, OPENGL);
@@ -52,6 +53,7 @@ void setup() {
 
   chargeList = new ArrayList();
   spotList = new ArrayList();
+  mySlider = new LinearSlider(400,20,120, 70);
 
   brightness = 1; //probability of electron emission
 }
@@ -73,6 +75,11 @@ void draw() {
     thisSpot.update();
     thisSpot.display(teltronScreen);
   }
+  
+  teltronScreen.pushMatrix();
+  teltronScreen.translate(width/2,0.8*height);
+  mySlider.display(teltronScreen);
+  teltronScreen.popMatrix();
   teltronScreen.endDraw();
 
   electronBeam.beginDraw();
@@ -124,6 +131,7 @@ void draw() {
 
   image(teltronScreen, 0, 0);
   image(electronBeam, 0, 0);
+
 }
 
 void makeElectron() {
