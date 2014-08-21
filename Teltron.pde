@@ -73,7 +73,7 @@ void draw() {
   background(0);
   teltronScreen.beginDraw();
   teltronScreen.blendMode(SCREEN);
-  teltronScreen.background(0);
+  teltronScreen.background(1,0,10);
   for (int i = 0; i < spotList.size (); i++) {
     Spot thisSpot = (Spot) spotList.get(i);
     if (thisSpot.timer > 500) {
