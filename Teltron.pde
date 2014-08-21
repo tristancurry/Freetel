@@ -131,12 +131,10 @@ void draw() {
 
 
 
-  pushMatrix();
-  translate(150,0);
-  scale(0.84375);
+
   image(teltronScreen, 0, 0);
   image(electronBeam, 0, 0);
-  popMatrix();
+
 }
 
 void makeElectron() {
