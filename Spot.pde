@@ -34,12 +34,12 @@ void display(PGraphics pg){
  pg.fill(10,105,255);
  pg.ellipseMode(CENTER);
  pg.pushMatrix();
- pg.translate(posX,posY);
+ pg.translate(posX,posY,posZ);
  pg.ellipse(0,0,7,7);
  pg.popMatrix();
  
  
   
 }
-  
+ 
 }

@@ -12,7 +12,7 @@ class Particle {
   float velZ;
   int timer;
 
-  int trailLength = 4;
+  int trailLength = 3;
   float posXArray[];
   float posYArray[];
   float posZArray[];
@@ -63,7 +63,7 @@ class Particle {
     posX = posX + velX;  //Update position
     posY = posY + velY;
     posZ = posZ + velZ;
-    
+
     posXArray[0] = posX;
     posYArray[0] = posY;
     posZArray[0] = posZ;
@@ -90,7 +90,7 @@ class Particle {
   }
 
   void display(PGraphics pg) {
-    color electronCol = color(255,80,120,255);
+    color electronCol = color(255, 80, 120, 255);
     color alphaInc = color(0, 0, 0, 255/(1.0*trailLength));
 
     pg.noStroke();
@@ -98,12 +98,10 @@ class Particle {
     for (int i = 0; i < posXArray.length; i++) {
       pg.fill(electronCol - i*alphaInc);
       pg.pushMatrix();
-      pg.translate(posXArray[i], posYArray[i]);
-      pg.ellipse(0, 0, 5, 5);
+      pg.translate(posXArray[i], posYArray[i], posZArray[i]);
+      pg.box(5);
       pg.popMatrix();
     }
-    pg.fill(255,100,255);
-    pg.ellipse(posX,posY,3,3);
   }
 }
 
