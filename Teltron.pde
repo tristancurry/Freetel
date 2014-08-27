@@ -13,6 +13,7 @@ float electronMass;    //set to unity
 float electronSpeed;
 
 float screenTilt = 2.9; // rotation of screen (degrees) around vertical axis, away from beam axis.
+float scaleFactor = 2.0; //used for scaling the PGraphics objects to a lower resolution than the main display.
 int resX;
 int resY;
 int textHeight;
@@ -25,7 +26,7 @@ float beamSpreadZ = 30;
 void setup() {
   size(960,540, OPENGL);
   noSmooth();
-  resX = int(round(width/1.0));
+  resX = int(round(width/2.0));
   resY = int(round(resX*(9/16.0))); //force 16:9 aspect ratio
   println(resX);
   println(resY);
