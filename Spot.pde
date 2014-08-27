@@ -1,7 +1,5 @@
 class Spot{
 
-
-
 float posX;
 float posY;
 float posZ;
