@@ -12,7 +12,7 @@ class Particle {
   float velZ;
   int timer;
 
-  int trailLength = 3;
+  int trailLength = 1;
   float posXArray[];
   float posYArray[];
   float posZArray[];
