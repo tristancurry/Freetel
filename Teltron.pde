@@ -1,19 +1,8 @@
 import controlP5.*;
+import processing.opengl.*;
 
-ControlP5 myController;
-PGraphics electronBeam;
-PGraphics teltronScreen;
-ArrayList chargeList;
-ArrayList spotList;
 
-float EFieldStrength;          //in N/C
-float internalEFieldStrength;  //in program units
-float BFieldStrength;          //in Tesla
-float internalBFieldStrength; //in program units
-float electronCharge = -1;  //in units of electronic charge
-float electronMass = 1;    //in units of electronic mass
-float electronSpeed;        //in metres per second
-float internalElectronSpeed; //in pixels per frame
+
 
 
 //FUNDAMENTAL UNITS//
@@ -33,9 +22,26 @@ int coilTurns = 320; //how many windings per coil
 float screenMetres = 0.1;  //width of teltron screen, in metres
 float screenTilt = 2.5; // rotation of screen (degrees) around vertical axis, away from beam axis.
 
+float EFieldStrength;          //in N/C
+float internalEFieldStrength;  //in program units
+float BFieldStrength;          //in Tesla
+float internalBFieldStrength; //in program units
+float electronCharge = -1;  //in units of electronic charge
+float electronMass = 1;    //in units of electronic mass
+float electronSpeed;        //in metres per second
+float internalElectronSpeed; //in pixels per frame
+
+ArrayList chargeList;
+ArrayList spotList;
+
+float clock;
+int tick;
 
 
-float scaleFactor = 1.0; //used for scaling the PGraphics objects to a lower resolution than the main display.
+//VARIABLES FOR DEALING WITH GRAPHICS
+PGraphics electronBeam;
+PGraphics teltronScreen;
+float scaleFactor = 2.0; //used for scaling the PGraphics objects to a lower resolution than the main display.
 int resX;
 int resY;
 int textHeight;
@@ -44,23 +50,26 @@ int vertCells;
 int horiCells;
 float beamSpreadY; //how far to spread the beam in the y direction (pixels)
 float beamSpreadZ;
+boolean displayBeam = true;
+boolean screenExists = true;
 
 void setup() {
   size(displayWidth, displayHeight, OPENGL);
-  
+  setupControls();
+
   scaleApparatus();
 
   scaleUnits(); //work out all of the relationships between SI units and internal units
-  
-  calculateEField();
+
+    calculateEField();
   calculateBField();
   calculateElectronSpeed();
-  
+
   println(EFieldStrength);
   println(BFieldStrength);
-   println(internalEFieldStrength);
+  println(internalEFieldStrength);
   println(internalBFieldStrength);
-  
+
 
 
   electronBeam = createGraphics(resX, resY, OPENGL);
@@ -72,50 +81,65 @@ void setup() {
 
   screenTilt = constrain(screenTilt, 0, 89); //screen angle of 90 degrees causes div by zero errors
 
-
-
-  //initialise sliders. Update control scheme and bury this in a function elsewhere
-  myController = new ControlP5(this);
-  myController.addSlider("BFieldStrength", -1.0, 1.0, -0.08, 10, 10, 100, 150); 
-  myController.controller("BFieldStrength").setColorForeground(#CC0000);
-  myController.addSlider("EFieldStrength", -4.0, 4.0, -0.08, 10, 180, 100, 150); 
-  myController.controller("EFieldStrength").setColorForeground(#CCCC00);
-  myController.addSlider("electronSpeed", 0.0, 10.0, 5, 10, 350, 100, 150); 
-  myController.controller("electronSpeed").setColorForeground(#0000CC);
+  resetClock();
 }
 
 
 void draw() {
 
   background(0);
-  
+
   makeElectron(); //produce a new electron
 
-  drawTeltronScreen();   //readies visuals of Teltron screen for display
-
+    if (screenExists) {
+    drawTeltronScreen();   //readies visuals of Teltron screen for display
+  }
   drawElectronBeam();    //readies visuals of electron beam for display
-  
-  
+
+
 
   //The next instructions are to render the various graphics layers to the computer screen
   pushMatrix();
-    scale(1.0*width/resX, 1.0*height/resY);
-    moveCamera(teltronScreen);
-    moveCamera(electronBeam);
+  scale(1.0*width/resX, 1.0*height/resY);
+  moveCamera(teltronScreen);
+  moveCamera(electronBeam);
+
+
+
+  if (screenExists == true) {
     image(teltronScreen, 0, 0);
+  }
+
+  if (displayBeam == true) {
     image(electronBeam, 0, 0);
+  }
   popMatrix();
-
-
+  
+  tick++;
+  clock = tick*framesToSeconds*10e9;
+  rectMode(RIGHT);
+  noStroke();
+  fill(255,50);
+  rect(width, 0, 0.85*width, 0.05*width);
+  textAlign(RIGHT,TOP);
+  textSize(0.015*width);
+  fill(255);
+  text("Time elapsed:",0.99*width,0.01*width);
+  text(str(round(100*clock)/100) + " ns",0.99*width,0.03*width);
 }
 
 void makeElectron() {
-  Particle newElectron = new Particle(electronCharge, electronMass, resX, resY/2 + random(-1*beamSpreadY, beamSpreadY), random(-1*beamSpreadZ, beamSpreadZ), (-1*internalElectronSpeed)+random(-0.01, 0.01), random(-0.1, 0.1), random(-0.02, 0.02));
+  Particle newElectron = new Particle(electronCharge, electronMass, resX, resY/2 + random(-1*beamSpreadY, beamSpreadY), random(-1*beamSpreadZ, beamSpreadZ), (-1*internalElectronSpeed)+random(-0.01, 0.01), random(-0.1, 0.1), random(-0.02, 0.02), int(round(5/scaleFactor)));
   chargeList.add(newElectron);
 }
 
 void screenCollide(Particle thisParticle) {
-  Spot newSpot = new Spot(thisParticle.posX, thisParticle.posY, thisParticle.posZ);
+  Spot newSpot = new Spot(thisParticle.posX, thisParticle.posY, thisParticle.posZ, int(round(7/scaleFactor)));
   spotList.add(newSpot);
+}
+
+void resetClock() {
+  tick = 0;
+  clock = 0;
 }
 

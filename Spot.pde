@@ -4,16 +4,17 @@ float posX;
 float posY;
 float posZ;
 color spotColour;
-
+int size;
 int timer;
 
 //Constructor
 
-Spot(float _posX, float _posY, float _posZ){
+Spot(float _posX, float _posY, float _posZ, int _size){
 
   posX = _posX;
   posY = _posY;
   posZ = _posZ;
+  size = _size;
   timer = 0;
 }
 
@@ -33,7 +34,7 @@ void display(PGraphics pg){
  pg.ellipseMode(CENTER);
  pg.pushMatrix();
  pg.translate(posX,posY,posZ);
- pg.ellipse(0,0,7,7);
+ pg.ellipse(0,0,size,size);
  pg.popMatrix();
  
  

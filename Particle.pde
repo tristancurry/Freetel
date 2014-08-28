@@ -16,10 +16,12 @@ class Particle {
   float posXArray[];
   float posYArray[];
   float posZArray[];
+  
+  int size;
 
   //Constructor
 
-  Particle(float _charge, float _mass, float _posX, float _posY, float _posZ, float _velX, float _velY, float _velZ) {
+  Particle(float _charge, float _mass, float _posX, float _posY, float _posZ, float _velX, float _velY, float _velZ, int _size) {
     charge = _charge;
     mass = _mass;
     posX = _posX;
@@ -28,6 +30,7 @@ class Particle {
     velX = _velX;
     velY = _velY;
     velZ = _velZ;
+    size = _size;
     timer = 0;
 
     posXArray = new float[trailLength];
@@ -99,7 +102,7 @@ class Particle {
       pg.fill(electronCol - i*alphaInc);
       pg.pushMatrix();
       pg.translate(posXArray[i], posYArray[i], posZArray[i]);
-      pg.box(5);
+      pg.box(size);
       pg.popMatrix();
     }
   }

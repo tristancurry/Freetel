@@ -43,16 +43,16 @@ void drawTeltronScreen() {
   teltronScreen.translate(0, -resY/2);
   teltronScreen.rotateX(HALF_PI);
   teltronScreen.fill(0, 50, 50, 50);
-  teltronScreen.rect(0, 0, 1.1*resX, 150);
+  teltronScreen.rect(0, 0, 1.1*resX, 0.3*resX);
   teltronScreen.translate(0, 0, -resY);
-  teltronScreen.rect(0, 0, 1.1*resX, 150);
+  teltronScreen.rect(0, 0, 1.1*resX, 0.3*resX);
   teltronScreen.popMatrix();
 
 
   //this goes through the list of fluorescing spots and removes the ones that have been around for a while
   for (int i = 0; i < spotList.size (); i++) {
     Spot thisSpot = (Spot) spotList.get(i);
-    if (thisSpot.timer > 500) {
+    if (thisSpot.timer > 250) {
       spotList.remove(i);
     }
   }
@@ -79,9 +79,9 @@ void drawElectronBeam() {
   //Check electron list for collisions with edges, screen or for escape from apparatus
   for (int i = 0; i < chargeList.size (); i++) {
     Particle thisElectron = (Particle) chargeList.get(i);
-    if (thisElectron.posX < 0||thisElectron.posX > resX || thisElectron.posY < 0 || thisElectron.posY > resY) {
+    if (thisElectron.posX < 0||thisElectron.posX > resX || screenExists && thisElectron.posY < 0 || screenExists && thisElectron.posY > resY) {
       chargeList.remove(i);
-    } else if (thisElectron.posZ < -1*(thisElectron.posX - resX/2)*tan(radians(screenTilt))) {
+    } else if (screenExists && thisElectron.posZ < -1*(thisElectron.posX - resX/2)*tan(radians(screenTilt))) {
       screenCollide(thisElectron);
       chargeList.remove(i);
     }
@@ -103,7 +103,7 @@ void drawElectronBeam() {
 //Tracks pointer movement to change eye position
 void moveCamera(PGraphics pg) {
   pg.beginDraw();
-  pg.camera(mouseX, (mouseY - height/2), (height/2)/tan(PI/6), resX/2, resY/2, 0, 0, 1, 0);
+  pg.camera(mouseX/scaleFactor, 2*(mouseY - height/2)/scaleFactor, (height/(1.5*scaleFactor))/tan(PI/6), resX/2, resY/2, 0, 0, 1, 0);
   pg.endDraw();
 }
 
