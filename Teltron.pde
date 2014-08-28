@@ -12,8 +12,8 @@ float chargeUnitsToCoulombs = 1.6e-19; //how many Coulombs per charge unit (elec
 float massUnitsToKg = 9.11e-31; //how many kg per charge unit (electron mass)
 
 //TELTRON BEAM-DEFLECTION INITIAL PARAMETERS//
-float linacPD = 3000;  //Volts, controls exit speed of electrons from gun
-float platePD = -2000;  //Volts, controls potential difference from upper to lower plate (positive value causes upwards electric field).
+float linacPD = 5000;  //Volts, controls exit speed of electrons from gun
+float platePD = -5000;  //Volts, controls potential difference from upper to lower plate (positive value causes upwards electric field).
 
 float coilRadius = 0.07; //Metres, radius of Helmholtz coils
 float coilCurrent = 0.13; //Amperes, current through coils
@@ -55,22 +55,16 @@ boolean screenExists = true;
 
 void setup() {
   size(displayWidth, displayHeight, OPENGL);
-  setupControls();
+  cp5 = new ControlP5(this);
 
   scaleApparatus();
 
-  scaleUnits(); //work out all of the relationships between SI units and internal units
+  //work out all of the relationships between SI units and internal units
+  scaleUnits();
 
-    calculateEField();
-  calculateBField();
-  calculateElectronSpeed();
+  calculateFields();
 
-  println(EFieldStrength);
-  println(BFieldStrength);
-  println(internalEFieldStrength);
-  println(internalBFieldStrength);
-
-
+  setupControls();
 
   electronBeam = createGraphics(resX, resY, OPENGL);
   ((PGraphicsOpenGL)electronBeam).textureSampling(2); //disable antialiasing (blurring) if scaled
@@ -89,12 +83,25 @@ void draw() {
 
   background(0);
 
-  makeElectron(); //produce a new electron
-
-    if (screenExists) {
-    drawTeltronScreen();   //readies visuals of Teltron screen for display
+  //produce a new electron
+  makeElectron(); 
+  
+  if(controlMode == 1){
+    convertInternalToSI();
+    updateControls();
   }
-  drawElectronBeam();    //readies visuals of electron beam for display
+
+  if(controlMode == 2){
+    calculateFields();
+    updateControls();
+  }
+
+  //these instructions update and prepare the visual elements for display
+  if (screenExists) {
+    drawTeltronScreen();
+  }
+
+  drawElectronBeam();   
 
 
 
@@ -105,7 +112,6 @@ void draw() {
   moveCamera(electronBeam);
 
 
-
   if (screenExists == true) {
     image(teltronScreen, 0, 0);
   }
@@ -114,19 +120,14 @@ void draw() {
     image(electronBeam, 0, 0);
   }
   popMatrix();
-  
-  tick++;
-  clock = tick*framesToSeconds*10e9;
-  rectMode(RIGHT);
-  noStroke();
-  fill(255,50);
-  rect(width, 0, 0.85*width, 0.05*width);
-  textAlign(RIGHT,TOP);
-  textSize(0.015*width);
-  fill(255);
-  text("Time elapsed:",0.99*width,0.01*width);
-  text(str(round(100*clock)/100) + " ns",0.99*width,0.03*width);
+
+  //Finally, update and display the clock
+  updateClock();
+  displayClock();
 }
+
+
+//ASSORTED FUNCTIONS/////////////////
 
 void makeElectron() {
   Particle newElectron = new Particle(electronCharge, electronMass, resX, resY/2 + random(-1*beamSpreadY, beamSpreadY), random(-1*beamSpreadZ, beamSpreadZ), (-1*internalElectronSpeed)+random(-0.01, 0.01), random(-0.1, 0.1), random(-0.02, 0.02), int(round(5/scaleFactor)));
@@ -141,5 +142,22 @@ void screenCollide(Particle thisParticle) {
 void resetClock() {
   tick = 0;
   clock = 0;
+}
+
+void updateClock() {
+  tick++;
+  clock = tick*framesToSeconds*10e9;
+}
+
+void displayClock() {
+  rectMode(RIGHT);
+  noStroke();
+  fill(255, 50);
+  rect(width, 0, 0.85*width, 0.05*width);
+  textAlign(RIGHT, TOP);
+  textSize(0.015*width);
+  fill(255);
+  text("Time elapsed:", 0.99*width, 0.01*width);
+  text(str(round(100*clock)/100) + " ns", 0.99*width, 0.03*width);
 }
 
