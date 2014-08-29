@@ -84,7 +84,7 @@ boolean cameraLocked;
 
 void setup() {
   size(displayWidth, displayHeight, OPENGL);
-  
+  orientation(LANDSCAPE);
   cp5 = new ControlP5(this);
   screenTilt = constrain(screenTilt, 0, 89); //screen angle of 90 degrees causes div by zero errors
   scaleApparatus();
@@ -192,3 +192,6 @@ void displayClock() {
   text(str(round(100*clock)/100) + " ns", 0.99*width, 0.03*width);
 }
 
+boolean sketchFullScreen() {
+  return true;
+}
