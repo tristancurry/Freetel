@@ -1,11 +1,42 @@
 //GRAPHICS_FUNCTIONS
 //Functions here do a variety of things related to the display of the simulation
 //They are often arcane or comprise many lines of code, so they're buried here, out of the way of the main code.
+/////////////////////////
+
+//Freetel                                                                                   //
+//A Teltron Electron Beam Deflection Simulation                                             //
+//(graphics_functions.pde)                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////
+//Copyright 2014 Tristan Miller                                                             //
+//////////////////////////////////////////////////////////////////////////////////////////////
+//This file is part of Freetel.                                                             //
+//                                                                                          //
+//  Freetel is free software: you can redistribute it and/or modify                         //
+//  it under the terms of the GNU General Public License as published by                    //
+//  the Free Software Foundation, either version 3 of the License, or                       //
+//  (at your option) any later version.                                                     //
+//                                                                                          //
+//  Freetel is distributed in the hope that it will be useful,                              //
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of                          //
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                           //
+//  GNU General Public License for more details.                                            //
+//                                                                                          //
+// You should have received a copy of the GNU General Public License                        //
+//  along with Freetel.  If not, see <http://www.gnu.org/licenses/>.                        //
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+void createGraphicsBuffers(){
+  electronBeam = createGraphics(resX, resY, OPENGL);
+  ((PGraphicsOpenGL)electronBeam).textureSampling(2); //disable antialiasing (blurring) if scaled
+  teltronScreen = createGraphics(resX, resY, OPENGL);
+  ((PGraphicsOpenGL)teltronScreen).textureSampling(2);
+}
+
 
 /////////////////////////////////////////////////////////////////
 
 //This function scales the display of the 3d elements
-void scaleApparatus(){
+void scaleApparatus() {
   resX = int(round(width/scaleFactor));
   resY = int(round(resX*(9/16.0))); //force 16:9 aspect ratio
 
@@ -26,7 +57,7 @@ void drawTeltronScreen() {
   teltronScreen.beginDraw();
   teltronScreen.blendMode(SCREEN);
   teltronScreen.background(1, 0, 10);
-  
+
   //this bit draws the basic rectangle of the screen
   teltronScreen.noFill();
   teltronScreen.stroke(2);
@@ -104,6 +135,12 @@ void drawElectronBeam() {
 void moveCamera(PGraphics pg) {
   pg.beginDraw();
   pg.camera(mouseX/scaleFactor, 2*(mouseY - height/2)/scaleFactor, (height/(1.5*scaleFactor))/tan(PI/6), resX/2, resY/2, 0, 0, 1, 0);
+  pg.endDraw();
+}
+
+void lockCamera(PGraphics pg) {
+  pg.beginDraw();
+  pg.camera(resX/2, resY/2, (height/(1.5*scaleFactor))/tan(PI/6), resX/2, resY/2, 0, 0, 1, 0);
   pg.endDraw();
 }
 

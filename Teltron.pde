@@ -1,3 +1,25 @@
+//Freetel                                                                                  //
+//A Teltron Electron Beam Deflection Simulation                                             //
+//(Teltron.pde)                                                                             //
+//////////////////////////////////////////////////////////////////////////////////////////////
+//Copyright 2014 Tristan Miller                                                             //
+//////////////////////////////////////////////////////////////////////////////////////////////
+//This file is part of Freetel.                                                             //
+//                                                                                          //
+//  Freetel is free software: you can redistribute it and/or modify                         //
+//  it under the terms of the GNU General Public License as published by                    //
+//  the Free Software Foundation, either version 3 of the License, or                       //
+//  (at your option) any later version.                                                     //
+//                                                                                          //
+//  Freetel is distributed in the hope that it will be useful,                              //
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of                          //
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                           //
+//  GNU General Public License for more details.                                            //
+//                                                                                          //
+// You should have received a copy of the GNU General Public License                        //
+//  along with Freetel.  If not, see <http://www.gnu.org/licenses/>.                        //
+//////////////////////////////////////////////////////////////////////////////////////////////
+
 import controlP5.*;
 import processing.opengl.*;
 
@@ -19,6 +41,7 @@ float coilRadius = 0.07; //Metres, radius of Helmholtz coils
 float coilCurrent = 0.13; //Amperes, current through coils
 int coilTurns = 320; //how many windings per coil 
 
+
 float screenMetres = 0.1;  //width of teltron screen, in metres
 float screenTilt = 2.5; // rotation of screen (degrees) around vertical axis, away from beam axis.
 
@@ -30,6 +53,11 @@ float electronCharge = -1;  //in units of electronic charge
 float electronMass = 1;    //in units of electronic mass
 float electronSpeed;        //in metres per second
 float internalElectronSpeed; //in pixels per frame
+
+float linacPD_backup;
+float platePD_backup;
+float coilCurrent_backup;
+
 
 ArrayList chargeList;
 ArrayList spotList;
@@ -50,32 +78,31 @@ int vertCells;
 int horiCells;
 float beamSpreadY; //how far to spread the beam in the y direction (pixels)
 float beamSpreadZ;
-boolean displayBeam = true;
-boolean screenExists = true;
+boolean displayBeam;
+boolean screenExists;
+boolean cameraLocked;
 
 void setup() {
   size(displayWidth, displayHeight, OPENGL);
+  
   cp5 = new ControlP5(this);
-
+  screenTilt = constrain(screenTilt, 0, 89); //screen angle of 90 degrees causes div by zero errors
   scaleApparatus();
-
+  storeDefaultValues();
+  createGraphicsBuffers();
+  
+  
   //work out all of the relationships between SI units and internal units
   scaleUnits();
-
   calculateFields();
-
   setupControls();
 
-  electronBeam = createGraphics(resX, resY, OPENGL);
-  ((PGraphicsOpenGL)electronBeam).textureSampling(2); //disable antialiasing (blurring) if scaled
-  teltronScreen = createGraphics(resX, resY, OPENGL);
-  ((PGraphicsOpenGL)teltronScreen).textureSampling(2);
+
+  //some other things that need doing when the program runs...
   chargeList = new ArrayList();
   spotList = new ArrayList();
-
-  screenTilt = constrain(screenTilt, 0, 89); //screen angle of 90 degrees causes div by zero errors
-
   resetClock();
+
 }
 
 
@@ -85,13 +112,13 @@ void draw() {
 
   //produce a new electron
   makeElectron(); 
-  
-  if(controlMode == 1){
+
+  if (controlMode == 1) {
     convertInternalToSI();
     updateControls();
   }
 
-  if(controlMode == 2){
+  if (controlMode == 2) {
     calculateFields();
     updateControls();
   }
@@ -108,9 +135,13 @@ void draw() {
   //The next instructions are to render the various graphics layers to the computer screen
   pushMatrix();
   scale(1.0*width/resX, 1.0*height/resY);
+  if(cameraLocked){
+  lockCamera(teltronScreen);
+  lockCamera(electronBeam);
+  } else {
   moveCamera(teltronScreen);
   moveCamera(electronBeam);
-
+  }
 
   if (screenExists == true) {
     image(teltronScreen, 0, 0);
