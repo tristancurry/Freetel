@@ -1,6 +1,6 @@
 //Freetel                                                                                  //
 //A Teltron Electron Beam Deflection Simulation                                             //
-//(Teltron.pde)                                                                             //
+//(Freetel.pde)                                                                             //
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Copyright 2014 Tristan Miller                                                             //
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ int tick;
 //VARIABLES FOR DEALING WITH GRAPHICS
 PGraphics electronBeam;
 PGraphics teltronScreen;
-float scaleFactor = 2.0; //used for scaling the PGraphics objects to a lower resolution than the main display.
+float scaleFactor = 1.0; //used for scaling the PGraphics objects to a lower resolution than the main display.
 int resX;
 int resY;
 int textHeight;
@@ -161,7 +161,7 @@ void draw() {
 //ASSORTED FUNCTIONS/////////////////
 
 void makeElectron() {
-  Particle newElectron = new Particle(electronCharge, electronMass, resX, resY/2 + random(-1*beamSpreadY, beamSpreadY), random(-1*beamSpreadZ, beamSpreadZ), (-1*internalElectronSpeed)+random(-0.01, 0.01), random(-0.1, 0.1), random(-0.02, 0.02), int(round(5/scaleFactor)));
+  Particle newElectron = new Particle(electronCharge, electronMass, resX, resY/2 + random(-1*beamSpreadY, beamSpreadY), random(-1*beamSpreadZ, beamSpreadZ), (-1*internalElectronSpeed)*(1+random(-0.01, 0.01)), random(-0.2, 0.2)/scaleFactor, random(-0.2, 0.2)/scaleFactor, int(round(5/scaleFactor)));
   chargeList.add(newElectron);
 }
 
