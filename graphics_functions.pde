@@ -45,7 +45,7 @@ void scaleApparatus() {
   vertCells = 2*int(floor(resY/(2.0*cellSize)));
   horiCells = int(round(resX/(1.0*cellSize)));
   beamSpreadY = 10/scaleFactor;
-  beamSpreadZ = 30/scaleFactor;
+  beamSpreadZ = 60/scaleFactor;
 }
 
 /////////////////////////////////////////////////////////////////

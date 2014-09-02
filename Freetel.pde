@@ -34,16 +34,16 @@ float chargeUnitsToCoulombs = 1.6e-19; //how many Coulombs per charge unit (elec
 float massUnitsToKg = 9.11e-31; //how many kg per charge unit (electron mass)
 
 //TELTRON BEAM-DEFLECTION INITIAL PARAMETERS//
-float linacPD = 5000;  //Volts, controls exit speed of electrons from gun
+float linacPD = 1500;  //Volts, controls exit speed of electrons from gun
 float platePD = -5000;  //Volts, controls potential difference from upper to lower plate (positive value causes upwards electric field).
 
 float coilRadius = 0.07; //Metres, radius of Helmholtz coils
-float coilCurrent = 0.13; //Amperes, current through coils
+float coilCurrent = 0.25; //Amperes, current through coils
 int coilTurns = 320; //how many windings per coil 
 
 
 float screenMetres = 0.1;  //width of teltron screen, in metres
-float screenTilt = 2.5; // rotation of screen (degrees) around vertical axis, away from beam axis.
+float screenTilt = 2.4; // rotation of screen (degrees) around vertical axis, away from beam axis.
 
 float EFieldStrength;          //in N/C
 float internalEFieldStrength;  //in program units
@@ -69,7 +69,7 @@ int tick;
 //VARIABLES FOR DEALING WITH GRAPHICS
 PGraphics electronBeam;
 PGraphics teltronScreen;
-float scaleFactor = 1.0; //used for scaling the PGraphics objects to a lower resolution than the main display.
+float scaleFactor = 2.0; //used for scaling the PGraphics objects to a lower resolution than the main display.
 int resX;
 int resY;
 int textHeight;
@@ -161,12 +161,12 @@ void draw() {
 //ASSORTED FUNCTIONS/////////////////
 
 void makeElectron() {
-  Particle newElectron = new Particle(electronCharge, electronMass, resX, resY/2 + random(-1*beamSpreadY, beamSpreadY), random(-1*beamSpreadZ, beamSpreadZ), (-1*internalElectronSpeed)*(1+random(-0.01, 0.01)), random(-0.2, 0.2)/scaleFactor, random(-0.2, 0.2)/scaleFactor, int(round(5/scaleFactor)));
+  Particle newElectron = new Particle(electronCharge, electronMass, resX, resY/2 + random(-1*beamSpreadY, beamSpreadY), random(-1*beamSpreadZ, beamSpreadZ), (-1*internalElectronSpeed)*(1+random(-0.02, 0.02)), random(-0.2, 0.2)/scaleFactor, random(-0.01, 0.01)/scaleFactor, int(round(5/scaleFactor)));
   chargeList.add(newElectron);
 }
 
 void screenCollide(Particle thisParticle) {
-  Spot newSpot = new Spot(thisParticle.posX, thisParticle.posY, thisParticle.posZ, int(round(7/scaleFactor)));
+  Spot newSpot = new Spot(thisParticle.posX, thisParticle.posY, thisParticle.posZ, int(round(10/scaleFactor)));
   spotList.add(newSpot);
 }
 
