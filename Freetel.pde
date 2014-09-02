@@ -166,7 +166,7 @@ void makeElectron() {
 }
 
 void screenCollide(Particle thisParticle) {
-  Spot newSpot = new Spot(thisParticle.posX, thisParticle.posY, thisParticle.posZ, int(round(10/scaleFactor)));
+  Spot newSpot = new Spot(thisParticle.posX, thisParticle.posY, thisParticle.posZ, int(round(12/scaleFactor)));
   spotList.add(newSpot);
 }
 
@@ -192,6 +192,4 @@ void displayClock() {
   text(str(round(100*clock)/100) + " ns", 0.99*width, 0.03*width);
 }
 
-boolean sketchFullScreen() {
-  return true;
-}
+
