@@ -29,16 +29,16 @@ import processing.opengl.*;
 
 //FUNDAMENTAL UNITS//
 float framesToSeconds = 3.0e-11; //how much time each frame represents
-float u0 = 4*PI*10e-7;  //magnetic permeability of vacuum
+float u0 = PI*4.0e-7;  //magnetic permeability of vacuum
 float chargeUnitsToCoulombs = 1.6e-19; //how many Coulombs per charge unit (electron charge)
 float massUnitsToKg = 9.11e-31; //how many kg per charge unit (electron mass)
 
 //TELTRON BEAM-DEFLECTION INITIAL PARAMETERS//
-float linacPD = 1500;  //Volts, controls exit speed of electrons from gun
-float platePD = -5000;  //Volts, controls potential difference from upper to lower plate (positive value causes upwards electric field).
+float linacPD = 1000;  //Volts, controls exit speed of electrons from gun
+float platePD = -2000;  //Volts, controls potential difference from upper to lower plate (positive value causes upwards electric field).
 
 float coilRadius = 0.07; //Metres, radius of Helmholtz coils
-float coilCurrent = 0.25; //Amperes, current through coils
+float coilCurrent = 2.00; //Amperes, current through coils
 int coilTurns = 320; //how many windings per coil 
 
 
@@ -155,6 +155,8 @@ void draw() {
   //Finally, update and display the clock
   updateClock();
   displayClock();
+  
+  displayCredit();
 }
 
 
@@ -192,4 +194,12 @@ void displayClock() {
   text(str(round(100*clock)/100) + " ns", 0.99*width, 0.03*width);
 }
 
-
+void displayCredit(){
+  pushMatrix();
+  translate(0.9*width, 0.9*height);
+  textAlign(RIGHT, TOP);
+  textSize(0.015*width);
+  fill(#C6EA00);
+  text("Freetel, by Tristan Miller 2014. Comments, questions to tristan.miller@asms.sa.edu.au",0,0);
+  popMatrix();
+}

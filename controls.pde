@@ -49,6 +49,12 @@ Knob coilN;
 
 int controlMode = 0;
 
+int minimumLinacV = 100;
+int maximumLinacV = 5000;
+int minimumPlateV = -5000;
+int maximumPlateV = 5000;
+int minimumCoilI = -2;
+int maximumCoilI = 2;
 
 void setupControls() {
 
@@ -134,10 +140,11 @@ void setupControls() {
             ;
 
 
-  EField = cp5.addKnob("internalEFieldStrength", -0.100, 0.100, internalEFieldStrength, 0, 0, 0)
+  EField = cp5.addKnob("internalEFieldStrength", minimumPlateV*NewtonsPerCoulombToEUnits/(resY*pixelsToMetres), maximumPlateV*NewtonsPerCoulombToEUnits/(resY*pixelsToMetres), internalEFieldStrength, 0, 0, 0)
               .setPosition(buttonPadding, buttonPadding)
               .setRadius(knobRadius)
               .setResolution(1500)
+              .setDecimalPrecision(3)
               .setDragDirection(Knob.HORIZONTAL)
               .setGroup(beginnerControls)
               .setColorForeground(color(180, 0, 255))
@@ -148,10 +155,11 @@ void setupControls() {
                         ;
 
 
-  BField = cp5.addKnob("internalBFieldStrength", -0.4, 0.4, internalBFieldStrength, 0, 0, 0)
+  BField = cp5.addKnob("internalBFieldStrength", pow(0.8, 1.5)*(u0*coilTurns*minimumCoilI/coilRadius)*TeslaToBUnits, pow(0.8, 1.5)*(u0*coilTurns*maximumCoilI/coilRadius)*TeslaToBUnits, internalBFieldStrength, 0, 0, 0)
               .setPosition(buttonPadding, 2*knobRadius + 2* buttonPadding)
               .setRadius(knobRadius)
               .setResolution(1500)
+              .setDecimalPrecision(3)
               .setDragDirection(Knob.HORIZONTAL)
               .setGroup(beginnerControls)
               .setColorForeground(color(0, 255, 180))
@@ -161,10 +169,11 @@ void setupControls() {
                       ;
 
 
-  eSpeed = cp5.addKnob("internalElectronSpeed", 0.75, 3, internalElectronSpeed, 0, 0, 0)
+  eSpeed = cp5.addKnob("internalElectronSpeed", sqrt(2*minimumLinacV*VoltsToPDUnits), sqrt(2*maximumLinacV*VoltsToPDUnits), internalElectronSpeed, 0, 0, 0)
                .setPosition(buttonPadding, 4*knobRadius + 3*buttonPadding)
                .setRadius(knobRadius)
                .setResolution(1500)
+               .setDecimalPrecision(2)
                .setDragDirection(Knob.HORIZONTAL)
                .setGroup(beginnerControls)
                .setColorForeground(color(255, 180, 0))
@@ -174,10 +183,11 @@ void setupControls() {
                        ;
 
 
-  plateV = cp5.addKnob("platePD", -5000, 5000, platePD, 0, 0, 0)
+  plateV = cp5.addKnob("platePD", minimumPlateV, maximumPlateV, platePD, 0, 0, 0)
               .setPosition(buttonPadding, buttonPadding)
               .setRadius(knobRadius)
               .setResolution(1500)
+              .setDecimalPrecision(1)
               .setDragDirection(Knob.HORIZONTAL)
               .setGroup(advancedControls)
               .setColorForeground(color(180, 0, 255))
@@ -187,10 +197,11 @@ void setupControls() {
                       ;
 
 
-  coilI = cp5.addKnob("coilCurrent", -2, 2, coilCurrent, 0, 0, 0)
+  coilI = cp5.addKnob("coilCurrent", minimumCoilI, maximumCoilI, coilCurrent, 0, 0, 0)
              .setPosition(buttonPadding, 2*knobRadius + 2* buttonPadding)
              .setRadius(knobRadius)
              .setResolution(1500)
+             .setDecimalPrecision(3)
              .setDragDirection(Knob.HORIZONTAL)
              .setGroup(advancedControls)
              .setColorForeground(color(0, 255, 180))
@@ -200,10 +211,11 @@ void setupControls() {
                       ;
 
 
-  linacV = cp5.addKnob("linacPD", 500, 5000, linacPD, 0, 0, 0)
+  linacV = cp5.addKnob("linacPD", minimumLinacV, maximumLinacV, linacPD, 0, 0, 0)
               .setPosition(buttonPadding, 4*knobRadius + 3*buttonPadding)
               .setRadius(knobRadius)
               .setResolution(1500)
+              .setDecimalPrecision(1)
               .setDragDirection(Knob.HORIZONTAL)
               .setGroup(advancedControls)
               .setColorForeground(color(255, 180, 0))

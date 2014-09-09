@@ -1,8 +1,3 @@
-//GRAPHICS_FUNCTIONS
-//Functions here do a variety of things related to the display of the simulation
-//They are often arcane or comprise many lines of code, so they're buried here, out of the way of the main code.
-/////////////////////////
-
 //Freetel                                                                                   //
 //A Teltron Electron Beam Deflection Simulation                                             //
 //(graphics_functions.pde)                                                                  //
@@ -25,6 +20,12 @@
 //  along with Freetel.  If not, see <http://www.gnu.org/licenses/>.                        //
 //////////////////////////////////////////////////////////////////////////////////////////////
 
+//GRAPHICS_FUNCTIONS
+//Functions here do a variety of things related to the display of the simulation
+//They are often arcane or comprise many lines of code, so they're buried here, out of the way of the main code.
+/////////////////////////
+
+
 void createGraphicsBuffers(){
   electronBeam = createGraphics(resX, resY, OPENGL);
   ((PGraphicsOpenGL)electronBeam).textureSampling(2); //disable antialiasing (blurring) if scaled
@@ -38,7 +39,7 @@ void createGraphicsBuffers(){
 //This function scales the display of the 3d elements
 void scaleApparatus() {
   resX = int(round(width/scaleFactor));
-  resY = int(round(resX*(9/16.0))); //force 16:9 aspect ratio
+  resY = int(round(resX*(0.52))); //force correct aspect ratio
 
   textHeight = int(round(resX/30.0));
   cellSize = int(round(resX/(100*screenMetres)));
