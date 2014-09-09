@@ -24,9 +24,6 @@ import controlP5.*;
 import processing.opengl.*;
 
 
-
-
-
 //FUNDAMENTAL UNITS//
 float framesToSeconds = 3.0e-11; //how much time each frame represents
 float u0 = PI*4.0e-7;  //magnetic permeability of vacuum
@@ -69,7 +66,7 @@ int tick;
 //VARIABLES FOR DEALING WITH GRAPHICS
 PGraphics electronBeam;
 PGraphics teltronScreen;
-float scaleFactor = 2.0; //used for scaling the PGraphics objects to a lower resolution than the main display.
+float scaleFactor = 1.5; //used for scaling the PGraphics objects to a lower resolution than the main display.
 int resX;
 int resY;
 int textHeight;
@@ -83,15 +80,15 @@ boolean screenExists;
 boolean cameraLocked;
 
 void setup() {
-  size(displayWidth, displayHeight, OPENGL);
+  size(int(round(0.9*displayWidth)), int(round(0.9*displayHeight)), OPENGL);
   orientation(LANDSCAPE);
   cp5 = new ControlP5(this);
   screenTilt = constrain(screenTilt, 0, 89); //screen angle of 90 degrees causes div by zero errors
   scaleApparatus();
   storeDefaultValues();
   createGraphicsBuffers();
-  
-  
+
+
   //work out all of the relationships between SI units and internal units
   scaleUnits();
   calculateFields();
@@ -102,7 +99,6 @@ void setup() {
   chargeList = new ArrayList();
   spotList = new ArrayList();
   resetClock();
-
 }
 
 
@@ -135,12 +131,12 @@ void draw() {
   //The next instructions are to render the various graphics layers to the computer screen
   pushMatrix();
   scale(1.0*width/resX, 1.0*height/resY);
-  if(cameraLocked){
-  lockCamera(teltronScreen);
-  lockCamera(electronBeam);
+  if (cameraLocked) {
+    lockCamera(teltronScreen);
+    lockCamera(electronBeam);
   } else {
-  moveCamera(teltronScreen);
-  moveCamera(electronBeam);
+    moveCamera(teltronScreen);
+    moveCamera(electronBeam);
   }
 
   if (screenExists == true) {
@@ -155,7 +151,7 @@ void draw() {
   //Finally, update and display the clock
   updateClock();
   displayClock();
-  
+
   displayCredit();
 }
 
@@ -194,12 +190,13 @@ void displayClock() {
   text(str(round(100*clock)/100) + " ns", 0.99*width, 0.03*width);
 }
 
-void displayCredit(){
+void displayCredit() {
   pushMatrix();
   translate(0.9*width, 0.9*height);
   textAlign(RIGHT, TOP);
   textSize(0.015*width);
   fill(#C6EA00);
-  text("Freetel, by Tristan Miller 2014. Comments, questions to tristan.miller@asms.sa.edu.au",0,0);
+  text("Freetel, by Tristan Miller 2014. Comments, questions to tristan.miller@asms.sa.edu.au", 0, 0);
   popMatrix();
 }
+

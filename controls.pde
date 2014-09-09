@@ -55,17 +55,21 @@ int minimumPlateV = -5000;
 int maximumPlateV = 5000;
 int minimumCoilI = -2;
 int maximumCoilI = 2;
+PFont p;
 
 void setupControls() {
 
 
 
+  
 
-
-  int modeButtonSize = int(0.15*height);
+  int modeButtonSize = int(0.18*height);
   int featureButtonSize = int(0.07*height);
-  int buttonPadding = int(0.05*height);
+  int buttonPadding = int(0.04*height);
   int knobRadius = int(0.12*height);
+  
+  p = createFont("data/Futura-Medium-48.vlw",int(round(0.015*height)));
+  cp5.setControlFont(p);
 
   controlMode = 0;
   modeControls = cp5.addGroup("modeControls")
